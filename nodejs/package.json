@@ -1,0 +1,11 @@
+{
+    "name": "onnx-compare-nodejs",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "node run.mjs"
+    },
+    "dependencies": {
+        "onnxruntime-node": "1.26.0"
+    }
+}

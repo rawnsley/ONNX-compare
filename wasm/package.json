@@ -1,0 +1,11 @@
+{
+    "name": "onnx-compare-wasm",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "node run.mjs"
+    },
+    "dependencies": {
+        "onnxruntime-web": "1.26.0"
+    }
+}
