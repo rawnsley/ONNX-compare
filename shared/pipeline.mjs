@@ -79,6 +79,10 @@ export async function report(platform, ortPackage, ortVersion, runInference) {
 
     const out = {
         platform,
+        // Host OS/arch the runner ran on — for native EPs this picks which
+        // prebuilt binary the package loaded (e.g. darwin/arm64 vs linux/x64).
+        // Doesn't affect WASM EPs, which are runtime-agnostic bytecode.
+        host: { os: process.platform, arch: process.arch },
         ortPackage,
         ortVersion,
         modelHash,

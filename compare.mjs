@@ -18,6 +18,7 @@ const log = s => lines.push(s)
 
 log(`# ONNX-compare: ${a.platform} vs ${b.platform}\n`)
 log(`Package:     ${a.ortPackage} ${a.ortVersion}   vs   ${b.ortPackage} ${b.ortVersion}`)
+log(`Host:        ${a.host.os}/${a.host.arch}            vs   ${b.host.os}/${b.host.arch}`)
 log(`Model:       ${a.modelHash}`)
 log(`Input:       ${a.input.samples} f32 samples`)
 log("")
