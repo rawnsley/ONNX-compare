@@ -1,5 +1,6 @@
 // Platform runner: onnxruntime-web (WASM EP, running under Node).
-// Shares decode/normalise/hash with ../nodejs via ../shared/pipeline.mjs.
+// WASM bytecode is host-independent, so the output should match what a
+// browser running the same package version would produce.
 
 import * as ort from "onnxruntime-web/wasm"
 import { readFileSync } from "node:fs"
@@ -17,13 +18,13 @@ const ortVersion = JSON.parse(readFileSync(resolve(here, "node_modules/onnxrunti
 // loader at the local files instead.
 ort.env.wasm.wasmPaths = distDir + "/"
 
-await report("wasm", "onnxruntime-web", ortVersion, async (normalised, modelPath) => {
+await report("wasm", "onnxruntime-web", ortVersion, async (input, modelPath) => {
     // Read the model bytes ourselves — onnxruntime-web's session-from-path
     // helper is browser-only, so under Node we pass it the buffer directly.
     const modelBytes = readFileSync(modelPath)
     const session = await ort.InferenceSession.create(modelBytes, { executionProviders: ["wasm"] })
-    const input = new ort.Tensor("float32", normalised, [1, normalised.length])
-    const result = await session.run({ input_values: input })
+    const tensor = new ort.Tensor("float32", input, [1, input.length])
+    const result = await session.run({ input_values: tensor })
     const t = result["logits"]
     return { logits: t.data, dims: t.dims }
 })

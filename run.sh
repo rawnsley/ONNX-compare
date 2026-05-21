@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
-# Runs every platform runner in turn and writes a comparison report to stdout.
-# Add a folder here when adding a new platform (must contain package.json + run.mjs
-# that follows the same JSON output contract as shared/pipeline.mjs#report).
+# Runs every platform under ./<name>/ and writes a comparison report. Each
+# platform folder is self-contained: it owns its dependencies and how to run
+# them (local node, docker, …). Add a folder + add its name here.
 
 set -euo pipefail
 cd "$(dirname "$0")"
 
-PLATFORMS=(nodejs wasm)
+PLATFORMS=(native wasm linux-x64 linux-arm64)
 
 mkdir -p output
 
 for p in "${PLATFORMS[@]}"; do
     echo "=== $p ===" >&2
-    (cd "$p" && npm install --silent && node run.mjs > "../output/$p.json")
+    "./$p/run.sh" > "output/$p.json"
 done
 
 echo >&2
 echo "=== compare ===" >&2
-node compare.mjs "output/${PLATFORMS[0]}.json" "output/${PLATFORMS[1]}.json" | tee "output/comparison.txt"
+reports=()
+for p in "${PLATFORMS[@]}"; do reports+=("output/$p.json"); done
+node compare.mjs "${reports[@]}" | tee "output/comparison.txt"
